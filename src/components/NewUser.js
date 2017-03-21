@@ -65,6 +65,8 @@ class NewUser extends React.Component {
         <Col md={2}/>
         <Col md={8}>
           <Well style={wellStyle}>
+          {/* es lint doesn't check JSX indenting, looks like you missed one indent
+             for the one form line below. - Harold */}
           <form method="" role="form">
               <legend>Please Register</legend>
 

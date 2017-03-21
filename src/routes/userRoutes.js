@@ -40,10 +40,14 @@ router.route('/addState')
     User.findOne({
       name: req.body.name
     }, function(err, user) {
+      // Throwing error below will kill your server. You can do next(err) to
+      // pass the error back to the API user. You will need to add the next
+      // parameter to the above .put callback (after req, res). -Harold
       if (err) throw err;
       user.states.push(req.body.statename);
       user.save(function(err){
         if(err){
+          // You can pass the err back up to the API user like above. - Harold
           res.json(err);
         } else {
           res.json({success: "content has been toggled"});
@@ -59,17 +63,19 @@ router.route('/removeState')
     User.findOne({
       name: req.body.name
     }, function(err, user) {
+      // Same as above. -Harold
       if (err) throw err;
       let a = user.states.indexOf(req.body.statename);
       user.states.splice(a, 1);
       user.save(function(err){
+        // Same as above. -Harold
         if(err){
           res.json(err);
         } else {
           res.json({success: "content has been toggled"});
         }
       });
-    }
+    } // very minor, but combining closings on lines 78-79, a little easier to read -Harold
   );
   });
 
@@ -79,6 +85,7 @@ router.post('/authenticate', function(req, res) {
   User.findOne({
     name: req.body.name
   }, function(err, user) {
+    // same as commented in an earlier route. -Harold
     if (err) throw err;
     if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });

@@ -40,6 +40,8 @@ class Welcome extends React.Component {
     const parentStyle = {background: "url(http://www.nationalgeographic.com/content/dam/travel/rights-exempt/Travel-2016/national-parks-road-trips/sahale-arm-trail-cascades-national-park.jpg) no-repeat center center fixed", height: "100vh"};
     const wellStyle = {marginTop: "30%", opacity: ".95", fontFamily: "Josefin Sans", backgroundBlendMode: "overlay", height: "40vh"};
     let logoStyle = {position: "absolute", top: "0", left: "10", zIndex: "100"};
+
+    // watch jsx indenting below - Harold
     return (
       <div>
       <div>

@@ -1,4 +1,6 @@
 /* Importing variables as lets to our required imports */
+// Since we are using babel-node - we can use ES6 imports. Best to be consistent.
+// Same for all your server routes (stateRoutes, userRoutes) -Harold
 let express = require('express');
 let router = express.Router();
 let Park = require('../models/park');
