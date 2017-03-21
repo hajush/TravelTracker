@@ -114,12 +114,7 @@ router.post('/authenticate', function(req, res, next) {
   console.log('Authenticating....', req.body.name, req.body.password);
   User.findOne({
     name: req.body.name
-<<<<<<< HEAD
-
-  }, function(err, user, next) {
-=======
   }, function(err, user) {
->>>>>>> 51322cab54e8c2f8e16708fdf579a5ac886a74eb
     if (err) next(err);
     if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
