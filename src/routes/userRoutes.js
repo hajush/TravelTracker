@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import express from 'express';
 import User from '../models/User';
 import hash from 'password-hash';
@@ -37,11 +36,11 @@ router.route('/user')
   });
 
 router.route('/addState')
-  .put(function(req, res){
+  .put(function(req, res, next){
     let user = new User();
     User.findOne({
       name: req.body.name
-    }, function(err, user, next) {
+    }, function(err, user) {
       if (err) next(err);
       user.states.push(req.body.statename);
       user.save(function(err){
@@ -55,11 +54,11 @@ router.route('/addState')
   });
 
 router.route('/removeState')
-  .delete(function(req, res){
+  .delete(function(req, res, next){
     let user = new User();
     User.findOne({
       name: req.body.name
-    }, function(err, user, next) {
+    }, function(err, user) {
       if (err) next(err);
       let a = user.states.indexOf(req.body.statename);
       user.states.splice(a, 1);
@@ -75,11 +74,11 @@ router.route('/removeState')
   });
 
 router.route('/addPark')
-  .put(function(req, res){
+  .put(function(req, res, next){
     let user = new User();
     User.findOne({
       name: req.body.name
-    }, function(err, user, next) {
+    }, function(err, user) {
       if (err) next(err);
       user.parks.push(req.body.parkname);
       user.save(function(err){
@@ -93,11 +92,11 @@ router.route('/addPark')
   });
 
 router.route('/removePark')
-  .delete(function(req, res){
+  .delete(function(req, res, next){
     let user = new User();
     User.findOne({
       name: req.body.name
-    }, function(err, user, next) {
+    }, function(err, user) {
       if (err) next(err);
       let a = user.parks.indexOf(req.body.parkname);
       user.parks.splice(a, 1);
@@ -111,12 +110,16 @@ router.route('/removePark')
     });
   });
 
-router.post('/authenticate', function(req, res) {
+router.post('/authenticate', function(req, res, next) {
   console.log('Authenticating....', req.body.name, req.body.password);
   User.findOne({
     name: req.body.name
+<<<<<<< HEAD
 
   }, function(err, user, next) {
+=======
+  }, function(err, user) {
+>>>>>>> 51322cab54e8c2f8e16708fdf579a5ac886a74eb
     if (err) next(err);
     if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
