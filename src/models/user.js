@@ -15,7 +15,10 @@ let UserSchema = new mongoose.Schema({
   },
   states: {
     type: Array
+  },
+  parks: {
+    type: Array
   }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

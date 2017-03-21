@@ -21,8 +21,8 @@ class ControlBar extends React.Component {
 
   createNavBar(){
     if(this.props.userStore.loggedInUser){
-      let logoStyle = {position: "absolute", top: "0", left: "10", zIndex: "100"};
-      let navbarStyle = {zIndex: "1", marginBottom:"50", borderBottom:"thin grey solid", backgroundColor:"SeaShell"};
+      let logoStyle = {position: "absolute", top: "0px", left: "10px", zIndex: "100"};
+      let navbarStyle = {zIndex: "1", marginBottom:"50px", borderBottom:"thin grey solid", backgroundColor:"SeaShell"};
       return (
         <div>
           <div>
@@ -34,8 +34,9 @@ class ControlBar extends React.Component {
                 <Navbar .Text>
                 Welcome {this.props.userStore.name}!
                 </Navbar .Text>
-                <NavDropdown title="Collections">
-                  <MenuItem>States</MenuItem>
+                <NavDropdown id="dropdown" title="Collections">
+                  <LinkContainer to={{pathname: '/StatesCollection'}}><NavItem>States</NavItem></LinkContainer>
+                  <LinkContainer to={{pathname: '/ParksCollection'}}><NavItem>National Parks</NavItem></LinkContainer>
                 </NavDropdown>
                 <NavItem onClick={() => {this.logOutHandler();}}>LogOut</NavItem>
               </Nav>

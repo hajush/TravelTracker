@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, NavItem, NavbarBrand, NavDropdown, MenuItem, ListGroup,
    ListGroupItem, Glyphicon, ProgressBar, Row, Col } from 'react-bootstrap';
 
-class Dashboard extends React.Component {
+class StatesCollection extends React.Component {
 
   constructor(){
     super();
@@ -38,16 +38,15 @@ class Dashboard extends React.Component {
   }
 
   calcStateComp() {
-    return (this.props.userStore.states.length/50)*100;
+    return ((this.props.userStore.states.length/50)*100);
   }
-
 
   render() {
     let listStyle = {height:"80vh", overflowY: "scroll", border:"thin solid SlateGrey"};
     return (
       <Row>
         <Col xs={12} md={9}>
-          <h3>Collection {this.calcStateComp().toFixed(0)} %</h3>
+          <h3>States collection: {this.calcStateComp().toFixed(0)}%</h3>
           <ProgressBar active now={this.calcStateComp()}/>
         </Col>
         <Col xs={12} md={3}>
@@ -61,8 +60,8 @@ class Dashboard extends React.Component {
   }
 }
 
-Dashboard.propTypes = {
+StatesCollection.propTypes = {
   userStore: React.PropTypes.object
 };
 
-export default inject("userStore")(observer(Dashboard));
+export default inject("userStore")(observer(StatesCollection));

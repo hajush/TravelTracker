@@ -1,16 +1,28 @@
 /* Importing variables as lets to our required imports */
-// Since we are using babel-node - we can use ES6 imports. Best to be consistent.
-// Same for all your server routes (stateRoutes, userRoutes) -Harold
-let express = require('express');
-let router = express.Router();
-let Park = require('../models/park');
+
+/* eslint-disable import/no-unresolved */
+import express from 'express';
+import Park from '../models/Park';
 import "isomorphic-fetch";
+
+let router = express.Router();
 
 /* using a router function with the params of req res and next */
 router.use(function(req, res, next){
   res.setHeader('Content-Type', 'application/json');
   next();
 });
+
+router.route('/')
+  .get(function(req, res, next){
+    Park.find(function(err, parks){
+      if (err) {
+        return next(err);
+      } else {
+        res.json(parks);
+      }
+    });
+  });
 
 /* Using the router route to initiate the parks database via a get function with
 the params of req, res and next, a fetch function is used from the NP parks API with a

@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import { Router, Route, browserHistory, IndexRoute, Link } from 'react-router';
 import { Grid, Col, Row, Image, Well, Button } from 'react-bootstrap';
 
-
 class Welcome extends React.Component {
 
   constructor() {
@@ -39,17 +38,16 @@ class Welcome extends React.Component {
   render() {
     const parentStyle = {background: "url(http://www.nationalgeographic.com/content/dam/travel/rights-exempt/Travel-2016/national-parks-road-trips/sahale-arm-trail-cascades-national-park.jpg) no-repeat center center fixed", height: "100vh"};
     const wellStyle = {marginTop: "30%", opacity: ".95", fontFamily: "Josefin Sans", backgroundBlendMode: "overlay", height: "40vh"};
-    let logoStyle = {position: "absolute", top: "0", left: "10", zIndex: "100"};
-
-    // watch jsx indenting below - Harold
+    let logoStyle = {position: "absolute", top: "0px", left: "10px", zIndex: "100"};
     return (
       <div>
-      <div>
-        <img className="hidden-xs" style={logoStyle} src="https://cdn2.iconfinder.com/data/icons/geest-travel-kit/128/travel_journey-04-2-512.png" width="100" height="100"/>
-      </div>
+        <div>
+          <img className="hidden-xs" style={logoStyle} src="https://cdn2.iconfinder.com/data/icons/geest-travel-kit/128/travel_journey-04-2-512.png" width="100" height="100"/>
+        </div>
         <div style={parentStyle}>
-        <Col md={2} lg={2} sm={2}/>
-        <Col md={8} lg={8} sm={8}>
+
+          <Col sm={2}/>
+          <Col sm={8}>
 
           <Well style={wellStyle} bsSize="large">
 
@@ -65,7 +63,7 @@ class Welcome extends React.Component {
                 <input onChange={this.handlePasswordChange} value={this.state.password}type="text" className="form-control" id="password" placeholder="password"/>
               </div>
               <Link to ="/NewUser">New User</Link>
-              <Link to="/Dashboard"><Button onClick={this.handleLoginUser} type="submit" className="btn btn-primary">Submit</Button></Link>
+              <Link to="/StatesCollection"><Button onClick={this.handleLoginUser} type="submit" className="btn btn-primary">Submit</Button></Link>
           </form>
           </Well>
         </Col>
