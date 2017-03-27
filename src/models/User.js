@@ -18,6 +18,12 @@ let UserSchema = new mongoose.Schema({
   },
   parks: {
     type: Array
+  },
+  mlbstadiums: {
+    type: Array
+  },
+  airports: {
+    type: Array
   }
 });
 

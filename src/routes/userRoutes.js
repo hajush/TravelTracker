@@ -16,15 +16,53 @@ router.use(function(req, res, next){
   next();
 });
 
+router.route('/add')
+  .put(function(req, res, next){
+    let user = new User();
+    User.findOne({
+      name: req.body.username
+    }, function(err, user) {
+      if (err) next(err);
+      user[req.body.collectionname].push(req.body.collectable);
+      user.save(function(err){
+        if(err){
+          next(err);
+        } else {
+          res.json({success: "content has been toggled"});
+        }
+      });
+    });
+  });
+
+router.route('/remove')
+  .delete(function(req, res, next){
+    User.findOne({
+      name: req.body.username
+    }, function(err, user) {
+      if (err) next(err);
+      let updatedcollection = user[req.body.collectionname].filter(function( obj ){
+        return obj.name != req.body.collectable.name;
+      });
+      user[req.body.collectionname] = updatedcollection;
+      user.save(function(err){
+        if(err){
+          next(err);
+        } else {
+          res.json({success: "content has been toggled"});
+        }
+      });
+    });
+  });
+
 router.route('/user')
   .post(function(req, res){
 
     let user = new User();
 
-    user.name = req.body.name;
+    user.name = req.body.name.toLowerCase();
     user.password = hash.generate(req.body.password);
     user.email = req.body.email;
-    user.admin = req.body.admin;
+    user.admin = false;
 
     user.save(function(err, user, next){
       if(err){
@@ -35,85 +73,10 @@ router.route('/user')
     });
   });
 
-router.route('/addState')
-  .put(function(req, res, next){
-    let user = new User();
-    User.findOne({
-      name: req.body.name
-    }, function(err, user) {
-      if (err) next(err);
-      user.states.push(req.body.statename);
-      user.save(function(err){
-        if(err){
-          next(err);
-        } else {
-          res.json({success: "content has been toggled"});
-        }
-      });
-    });
-  });
-
-router.route('/removeState')
-  .delete(function(req, res, next){
-    let user = new User();
-    User.findOne({
-      name: req.body.name
-    }, function(err, user) {
-      if (err) next(err);
-      let a = user.states.indexOf(req.body.statename);
-      user.states.splice(a, 1);
-      user.save(function(err){
-        // Same as above. -Harold
-        if(err){
-          next(err);
-        } else {
-          res.json({success: "content has been toggled"});
-        }
-      });
-    });
-  });
-
-router.route('/addPark')
-  .put(function(req, res, next){
-    let user = new User();
-    User.findOne({
-      name: req.body.name
-    }, function(err, user) {
-      if (err) next(err);
-      user.parks.push(req.body.parkname);
-      user.save(function(err){
-        if(err){
-          next(err);
-        } else {
-          res.json({success: "content has been toggled"});
-        }
-      });
-    });
-  });
-
-router.route('/removePark')
-  .delete(function(req, res, next){
-    let user = new User();
-    User.findOne({
-      name: req.body.name
-    }, function(err, user) {
-      if (err) next(err);
-      let a = user.parks.indexOf(req.body.parkname);
-      user.parks.splice(a, 1);
-      user.save(function(err){
-        if(err){
-          next(err);
-        } else {
-          res.json({success: "content has been toggled"});
-        }
-      });
-    });
-  });
-
 router.post('/authenticate', function(req, res, next) {
   console.log('Authenticating....', req.body.name, req.body.password);
   User.findOne({
-    name: req.body.name
+    name: req.body.name.toLowerCase()
   }, function(err, user) {
     if (err) next(err);
     if (!user) {
@@ -132,7 +95,9 @@ router.post('/authenticate', function(req, res, next) {
           admin: user.admin,
           id: user._id,
           states: user.states,
-          parks: user.parks
+          parks: user.parks,
+          mlbstadiums: user.mlbstadiums,
+          airports: user.airports
         });
       }
     }

@@ -1,6 +1,8 @@
 /* importing neccessary extensions for the UserStore page */
 import { extendObservable } from 'mobx';
-import {browserHistory} from 'react-router';
+import React from 'react';
+import { browserHistory } from 'react-router';
+import { ListGroupItem, Glyphicon } from 'react-bootstrap';
 
 /* Initializing class UserStore then exporting extendObservable
 function with props this, and the {key: partner} values.
@@ -14,73 +16,99 @@ export default class UserStore {
       email: "",
       loginMsg: "",
       loggedInUser: false,
+      failedLogin: false,
+      newUserCreated: false,
       id: "",
       token: "",
       states: [],
-      parks: []
+      parks: [],
+      mlbstadiums: [],
+      airports: []
     });
     this.LoginUser = this.LoginUser.bind(this);
   }
 
-  toggleState(name, statename){
+  getActivityList(){
+    let activityList = [];
 
-    if(this.states.indexOf(statename)>=0) {
-      fetch(`/api/removeState`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          statename: statename
-        })
-      }).then(result=>{
-        let a = this.states.indexOf(statename);
-        this.states.splice(a, 1);}
-      );
-    } else {fetch(`/api/addState`, {
+    this.states.forEach(function(x){
+      activityList.push(x);
+    });
+
+    this.parks.forEach(function(x){
+      activityList.push(x);
+    });
+
+    this.mlbstadiums.forEach(function(x){
+      activityList.push(x);
+    });
+
+    this.airports.forEach(function(x){
+      activityList.push(x);
+    });
+
+    activityList.sort(function (a,b) {
+      return a.date > b.date;
+    });
+    activityList.reverse();
+    let preparedActivityList = [];
+
+    activityList.forEach(function(x){
+      preparedActivityList.push(<ListGroupItem key={x.name}><Glyphicon glyph="plus-sign" style={{color: "green"}}/>  {x.name}, {x.date}</ListGroupItem>);
+    });
+
+    return preparedActivityList;
+  }
+
+  getPercentageCompletion(collectionname){
+    if(collectionname == "states"){return (this[collectionname].length/50)*100;}
+    else if(collectionname == "parks"){return (this[collectionname].length/59)*100;}
+    else if(collectionname == "mlbstadiums"){return (this[collectionname].length/30)*100;}
+    else if(collectionname == "airports"){return (this[collectionname].length/34)*100;}
+  }
+
+  getDateCollectableAdded(collectablename, collectionname){
+    let collectable = this[collectionname].find(function(y){
+      return y.name==collectablename;
+    });
+    return collectable.date;
+  }
+
+  removeCollectable(username, collectablename, collectionname){
+    let collectable = this[collectionname].find(function(y){
+      return y.name==collectablename;
+    });
+    fetch(`/api/remove`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        collectable: collectable,
+        collectionname: collectionname
+      })
+    }).then(result=>{
+      let collectableposition = this[collectionname].indexOf(collectable);
+      this[collectionname].splice(collectableposition, 1);}
+    );
+  }
+
+  addCollectable(username, collectablename, collectionname){
+    let collectable = {name: collectablename, date: new Date().toLocaleDateString()};
+    fetch(`/api/add`, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: name,
-        statename: statename
+        username: username,
+        collectable: collectable,
+        collectionname: collectionname
       })
-    }).then(this.states.push(statename));}
-  }
-
-  togglePark(name, parkname){
-
-    if(this.parks.indexOf(parkname)>=0) {
-      fetch(`/api/removePark`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          parkname: parkname
-        })
-      }).then(result=>{
-        let a = this.parks.indexOf(parkname);
-        this.parks.splice(a, 1);}
-      );
-    } else {fetch(`/api/addPark`, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        parkname: parkname
-      })
-    }).then(this.parks.push(parkname));}
-  }
+    }).then(this[collectionname].push(collectable));}
 
   logUserOut(){
     this.name= "";
@@ -93,6 +121,8 @@ export default class UserStore {
     this.token= "";
     this.states= [];
     this.parks= [];
+    this.mlbstadiums= [];
+    this.airports= [];
     browserHistory.push('/Welcome');
   }
 
@@ -118,15 +148,20 @@ export default class UserStore {
       return result.json();})
     .then(loginCred => {
       if (loginCred.success && loginCred.token) {
+        this.failedLogin=false;
         this.id = loginCred.id;
         this.admin = loginCred.admin;
         this.token = loginCred.token;
         this.loggedInUser = true;
-        this.name = name;
+        this.name = name.toLowerCase();
         this.states = loginCred.states;
         this.parks = loginCred.parks;
+        this.mlbstadiums = loginCred.mlbstadiums;
+        this.airports = loginCred.airports;
+        browserHistory.push('/Dashboard');
       } else {
         this.loggedInUser=false;
+        this.failedLogin=true;
         this.name="";
         browserHistory.push('/Welcome');
       }

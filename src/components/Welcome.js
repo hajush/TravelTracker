@@ -1,9 +1,8 @@
 import React from 'react';
-import NavLink from './NavLink';
 import NewUser from './NewUser';
 import { inject, observer } from 'mobx-react';
 import { Router, Route, browserHistory, IndexRoute, Link } from 'react-router';
-import { Grid, Col, Row, Image, Well, Button } from 'react-bootstrap';
+import { Grid, Col, Row, Image, Well, Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 class Welcome extends React.Component {
 
@@ -20,6 +19,7 @@ class Welcome extends React.Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleLoginUser = this.handleLoginUser.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.loginNotice = this.loginNotice.bind(this);
   }
 
   handleNameChange(e) {
@@ -31,47 +31,53 @@ class Welcome extends React.Component {
   handleEmailChange(e) {
     this.setState({email: e.target.value});
   }
-  handleLoginUser(event) {
+  handleLoginUser(e) {
+    e.preventDefault();
     this.props.userStore.LoginUser(this.state.name, this.state.password);
   }
 
+  loginNotice() {
+    if(this.props.userStore.failedLogin){
+      return (<h5 style={{color: "red"}}>Incorrect username or password.  Please try again</h5>);}
+    else if(this.props.userStore.newUserCreated){
+      return (<h5 style={{color: "green"}}>New User Created! Feel free to login</h5>);}
+  }
+
   render() {
-    const parentStyle = {background: "url(http://www.nationalgeographic.com/content/dam/travel/rights-exempt/Travel-2016/national-parks-road-trips/sahale-arm-trail-cascades-national-park.jpg) no-repeat center center fixed", height: "100vh"};
-    const wellStyle = {marginTop: "30%", opacity: ".95", fontFamily: "Josefin Sans", backgroundBlendMode: "overlay", height: "40vh"};
-    let logoStyle = {position: "absolute", top: "0px", left: "10px", zIndex: "100"};
+    const bg = require('../img/frontBackground-min.jpg');
+    const parentStyle = {height:"100vh", width:"100vw", background: "url("+bg+") no-repeat center fixed", backgroundSize: "cover"};
+    const wellStyle = {position: "absolute", top: "0px", bottom: "0px", left: "0px", right: "0px", margin: "auto", opacity: ".95", backgroundBlendMode: "overlay", height: "300px", width: "500px"};
+    const logoStyle = {position: "absolute", top: "0px", left: "10px", zIndex: "100"};
+    const newUserLinkStyle = {float: "right"};
+
     return (
       <div>
         <div>
-          <img className="hidden-xs" style={logoStyle} src="https://cdn2.iconfinder.com/data/icons/geest-travel-kit/128/travel_journey-04-2-512.png" width="100" height="100"/>
+          <img className="hidden-xs" style={logoStyle} src={require('../img/canureadme.png')} width="150" height="150"/>
         </div>
         <div style={parentStyle}>
-
-          <Col sm={2}/>
-          <Col sm={8}>
-
           <Well style={wellStyle} bsSize="large">
+            <Form>
 
-          <form method="" role="form">
+                <legend>Log In to Travel Tracker</legend>
+                {this.loginNotice()}
+                <FormGroup controlId="formInlineName">
+                  <ControlLabel>Name</ControlLabel>
+                  <FormControl onChange={this.handleNameChange} type="text" placeholder="username" />
+                </FormGroup>
 
-              <legend>{this.state.loginMsg == "" ? "Log In to Travel Tracker": this.state.loginMsg}</legend>
+                <FormGroup controlId="formInlinePassword">
+                  <ControlLabel>Password</ControlLabel>
+                  <FormControl onChange={this.handlePasswordChange} type="password" placeholder="password" />
+                </FormGroup>
 
-              <div className="form-group">
-                <input onChange={this.handleNameChange} value={this.state.name} type="text" className="form-control" id="username" placeholder="username"/>
-              </div>
-
-              <div className="form-group">
-                <input onChange={this.handlePasswordChange} value={this.state.password}type="text" className="form-control" id="password" placeholder="password"/>
-              </div>
-              <Link to ="/NewUser">New User</Link>
-              <Link to="/StatesCollection"><Button onClick={this.handleLoginUser} type="submit" className="btn btn-primary">Submit</Button></Link>
-          </form>
+                <div style={newUserLinkStyle}>
+                  <Link to ="/NewUser" >New User</Link>
+                </div>
+                <Link to="/Dashboard"><Button onClick={this.handleLoginUser} type="submit" className="btn btn-primary">Submit</Button></Link>
+            </Form>
           </Well>
-        </Col>
-        <Col md={2} lg={2} sm={2}/>
        </div>
-       <style>
-       @import url('https://fonts.googleapis.com/css?family=Josefin+Sans');
-       </style>
       </div>
     );
   }
