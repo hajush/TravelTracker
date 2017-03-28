@@ -1,6 +1,4 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { Col, Row } from 'react-bootstrap';
 import Datamap from 'react-datamaps';
 
 class CollectionMap extends React.Component {
@@ -15,29 +13,6 @@ class CollectionMap extends React.Component {
     };
   }
 
-  addClickHandlers(ref){
-    if (ref && ref.map) {
-      ref.map.svg.selectAll('.datamaps-subunit').on('click', (state) => {
-        console.log("You clicked on "+state.properties.name);
-      });
-    }
-  }
-
-  // flatMapFill(){
-  //   let fillKeys = {};
-  //   fetch(`/states`)
-  //   .then(result => result.json())
-  //   .then(data => {
-  //     data.forEach(function(x){
-  //       fillKeys[x.states] = {
-  //         fillKey: 'NotCollected'
-  //       };
-  //     });
-  //   });
-  //
-  //   return fillKeys;
-  // }
-
   prepareFillKeys(){
     let fillKeys = {};
     let theStates = [];
@@ -47,12 +22,16 @@ class CollectionMap extends React.Component {
           fillKeys[x.states] = {
             fillKey: 'Collected'
           };
+        }else{
+          fillKeys[x.states] = {
+            fillKey: 'defaultFill'
+          };
         }
       }, this);
     }else{
       this.state.theStates.forEach(function(x){
         fillKeys[x] = {
-          fillKey: 'NotCollected'
+          fillKey: 'defaultFill'
         };
       });
     }
@@ -68,7 +47,7 @@ class CollectionMap extends React.Component {
         if(this.props.usersCollection.find(function(y){return y.name==x.name;})){
           bubbles.push(
             {
-              name: x.name,
+              name: x.name + ", " + x.description,
               radius,
               country: 'USA',
               latitude: x.latitude,
@@ -76,31 +55,45 @@ class CollectionMap extends React.Component {
               fillKey: 'Collected'
             }
           );
+        }else{
+          bubbles.push({
+            name: x.name + ", " + x.description,
+            radius,
+            country: 'USA',
+            latitude: x.latitude,
+            longitude: x.longitude,
+            fillKey: 'NotCollected'
+          }
+        );
         }
       }, this);
     }
-
     return bubbles;
   }
 
   prepareMap(){
     let fillKeys = this.prepareFillKeys();
-    let ourMap = (<Datamap scope="usa" height="650"
-    ref={this.addClickHandlers}
+    let ourMap = (<Datamap scope="usa"
+    responsive
+    height="450"
+    // ref={this.addClickHandlers}
     geographyConfig={{
-      highlightFillColor: '#0DFFA6',
-      highlightBorderColor: '#1D0CE8',
-      highlightBorderWidth: 3
+      highlightOnHover: false,
+      popupOnHover: false
+      // highlightFillColor: '#0DFFA6',
+      // highlightBorderColor: '#1D0CE8',
+      // highlightBorderWidth: 3
     }}
     fills={{
       'Collected': '#35B729',
-      'NotCollected': '#707070',
+      'NotCollected': '#FF7F50',
       'defaultFill': '#707070'}}
       data={fillKeys}
       bubbles={this.prepareBubbles()}
         bubbleOptions={{
           borderWidth: 1,
-          borderColor: '#E8AB0C'
+          borderColor: '#000000',
+          fillOpacity: 1,
         }}
       labels
       />);
@@ -110,18 +103,17 @@ class CollectionMap extends React.Component {
   render() {
 
     return (
-      <Col className="hidden-sm hidden-xs" md={12}>
+      <div>
         {this.prepareMap()}
-      </Col>
+      </div>
     );
   }
 }
 
 CollectionMap.propTypes = {
-  userStore: React.PropTypes.object,
   collectionName: React.PropTypes.string,
   fullCollection: React.PropTypes.array,
   usersCollection: React.PropTypes.object
 };
 
-export default inject("userStore")(observer(CollectionMap));
+export default CollectionMap;

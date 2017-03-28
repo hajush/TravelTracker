@@ -60,11 +60,19 @@ export default class UserStore {
     return preparedActivityList;
   }
 
+  checkForCollections(){
+    if(this.states.length>0 || this.parks.length>0 || this.mlbstadiums.length>0 || this.airports.length>0) {
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   getPercentageCompletion(collectionname){
     if(collectionname == "states"){return (this[collectionname].length/50)*100;}
     else if(collectionname == "parks"){return (this[collectionname].length/59)*100;}
     else if(collectionname == "mlbstadiums"){return (this[collectionname].length/30)*100;}
-    else if(collectionname == "airports"){return (this[collectionname].length/34)*100;}
+    else if(collectionname == "airports"){return (this[collectionname].length/529)*100;}
   }
 
   getDateCollectableAdded(collectablename, collectionname){
@@ -158,6 +166,7 @@ export default class UserStore {
         this.parks = loginCred.parks;
         this.mlbstadiums = loginCred.mlbstadiums;
         this.airports = loginCred.airports;
+        this.newUserCreated = false;
         browserHistory.push('/Dashboard');
       } else {
         this.loggedInUser=false;
