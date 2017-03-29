@@ -3,15 +3,16 @@ export default {
   {
     height:"84vh",
     overflowY: "scroll",
-    border:"thin solid SlateGrey"
+    border:"thin solid #ececec"
   },
   panelStyle:
   {
-    margin: "0"
+    margin: "0",
+    textAlign: "center"
   },
   mapStyle:
   {
-    top: "-60px",
+    top: "-30px",
     left: "20px"
   }
 };

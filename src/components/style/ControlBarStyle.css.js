@@ -1,10 +1,9 @@
 export default {
+
   navbarStyle:{
     zIndex: "1",
-    background:"rgb(53, 183, 41)",
-    color: "white",
-    boxShadow: "0px 1px 5px grey",
-    marginBottom: "20px"
+    marginBottom: "50px",
+    height: "50px"
   },
   logoStyle:{
     position: "absolute",
